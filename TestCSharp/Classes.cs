@@ -79,11 +79,5 @@ namespace TestCSharp
 
             // BM1, CM1, DM1, AM2, BM2, DM2
         }
-
-
-
-
     }
-
-
 }
