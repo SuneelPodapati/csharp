@@ -67,8 +67,10 @@ namespace TestCSharp
 
             #region AsyncMain
             //string asyncResult = Task.Run(myMethod).GetAwaiter().GetResult();
-            //Console.WriteLine(asyncResult); 
+            //Console.WriteLine(asyncResult);
             #endregion
+
+
 
 
             Console.ReadLine();
@@ -79,7 +81,7 @@ namespace TestCSharp
         static async Task<string> myMethod()
         {
             var http = new HttpClient();
-            return await http.GetStringAsync("http://bing.com");
+            return await http.GetStringAsync("https://github.com/SuneelPodapati");
         }
         #endregion
     }
