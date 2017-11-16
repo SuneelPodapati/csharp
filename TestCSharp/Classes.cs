@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static TestCSharp.StaticDirective.A;
+using static TestCSharp.StaticDirective.B;
+
 
 namespace TestCSharp
 {
@@ -18,7 +21,23 @@ namespace TestCSharp
             {
                 Console.WriteLine("M1 Overload");
             }
-        } 
+
+
+        }
+
+        struct TestStaticDirective
+        {
+            public  void MM()
+            {
+                // A.m();  // Fully Qualified name is needed
+                TestStaticDirective? v;
+                v = null;
+                unsafe
+                {
+                    Console.WriteLine(sizeof(TestStaticDirective)); 
+                }
+            }
+        }
 
     }
 
@@ -80,4 +99,50 @@ namespace TestCSharp
             // BM1, CM1, DM1, AM2, BM2, DM2
         }
     }
+
+    namespace StaticDirective
+    {
+        public  class A
+        {
+            public int Number { get; set; }
+            public string Name { get; set; }
+            public static void m(A a)
+            {
+                a.Name = "Suneel";
+                //a = new A()
+                //{
+                //    Name = "Suneel",  // Testing the ref for reference types
+                //    Number = 1
+                //};
+            }
+        }
+
+        public  class B
+        {
+            public static void m()
+            {
+
+            }
+        }
+        
+    }
+
+    namespace ConstructorObjectInitializer
+    {
+       public class A
+        {
+            public int Age { get; set; }
+            public string Name { get; set; }
+
+            public A(string name)
+            {
+                Name = name;
+                Console.WriteLine(DateTime.Now.Millisecond);
+                Console.WriteLine(Name);
+                
+            }
+        }
+      
+    }
+    
 }

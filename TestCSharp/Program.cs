@@ -5,11 +5,15 @@ using System.Text;
 using TestCSharp.MultiLevelInheritance;
 using System.Threading.Tasks;
 using TestCSharp.OptionalParameters;
+using TestCSharp.ConstructorObjectInitializer;
+using System.Net.Http;
 
 namespace TestCSharp
 {
     class Program
     {
+        private List<int> list;
+
         static void Main(string[] args)
         {
             #region OptionalParameters
@@ -42,20 +46,41 @@ namespace TestCSharp
             //a.M2(); 
             #endregion
 
+            #region StaticDirective and ref
+            //TestStaticDirective s = new TestStaticDirective();
+            //s.MM();
 
+            //StaticDirective.A a = new StaticDirective.A()
+            //{
+            //    Name = "ABC",
+            //    Number = 2
+            //};
+            //StaticDirective.A.m(a);
+            //Console.WriteLine("Name: " + a.Name); 
+            #endregion
 
+            #region ConstructorObjectInitializer
+            //ConstructorObjectInitializer.A a = new ConstructorObjectInitializer.A("Suneel") { Age = 5, Name = "Sachin" };
+            //Console.WriteLine(DateTime.Now.Millisecond);
+            //Console.WriteLine(a.Name); 
+            #endregion
 
-
-
-
-
-
-
-
-
+            #region AsyncMain
+            //string asyncResult = Task.Run(myMethod).GetAwaiter().GetResult();
+            //Console.WriteLine(asyncResult); 
+            #endregion
 
 
             Console.ReadLine();
         }
+
+
+        #region AsyncMethod
+        static async Task<string> myMethod()
+        {
+            var http = new HttpClient();
+            return await http.GetStringAsync("http://bing.com");
+        }
+        #endregion
     }
 }
