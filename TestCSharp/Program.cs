@@ -7,12 +7,22 @@ using System.Threading.Tasks;
 using TestCSharp.OptionalParameters;
 using TestCSharp.ConstructorObjectInitializer;
 using System.Net.Http;
+using System.Threading;
+using TestCSharp.ThreadingWithLock;
 
 namespace TestCSharp
 {
     class Program
     {
-        private List<int> list;
+        static AutoResetEvent autoEvent;
+
+        static void DoWork()
+        {
+            Console.WriteLine("   worker thread started, now waiting on event...");
+            autoEvent.WaitOne();
+            Console.WriteLine("   worker thread reactivated, now exiting...");
+        }
+        private static List<int> list;
 
         static void Main(string[] args)
         {
@@ -70,7 +80,54 @@ namespace TestCSharp
             //Console.WriteLine(asyncResult);
             #endregion
 
+            #region BoxingUnBoxing
+            //short i = 1;
+            //object o = i;   // Boxing stores the info about the boxed value type in the object
+            //try
+            //{
+            //    int a = (int)i;  // Direct casting is possible through the value types default implicit conversion
+            //    Console.WriteLine(a);
+            //    int s = (int)o;  // Not possible as Unboxing type should also match the boxed type even if there is a default implicit conversion between boxed and unboxed types
+            //    Console.WriteLine(s);
+            //    int ss = (short)o; // Possible as Unboxing is successful and then there is a default implicit conversion between short and int
+            //    Console.WriteLine(ss);
+            //}
+            //catch (Exception exp)
+            //{
+            //    Console.WriteLine(exp.Message);
+            //}
+            #endregion
 
+            #region ThreadingWithLock
+            //Thread[] threads = new Thread[10];
+            //Account acc = new Account(10000);
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    Thread t = new Thread(new ThreadStart(acc.DoTransactions));
+            //    threads[i] = t;
+            //}
+            //for (int i = 0; i < 10; i++)
+            //{
+            //    threads[i].Start();
+            //}
+
+            ////block main thread until all other threads have ran to completion.
+            //foreach (var t in threads)
+            //    t.Join();
+            #endregion
+
+            autoEvent = new AutoResetEvent(false);
+
+            Console.WriteLine("main thread starting worker thread...");
+            Thread t = new Thread(DoWork);
+            t.Start();
+            
+            Console.WriteLine("main thread sleeping for 1 second...");
+            var v = Console.ReadLine();
+            Thread.Sleep(1000);
+
+            Console.WriteLine("main thread signaling worker thread...");
+            autoEvent.Set();
 
 
             Console.ReadLine();

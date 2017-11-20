@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using static TestCSharp.StaticDirective.A;
 using static TestCSharp.StaticDirective.B;
@@ -27,14 +28,14 @@ namespace TestCSharp
 
         struct TestStaticDirective
         {
-            public  void MM()
+            public void MM()
             {
                 // A.m();  // Fully Qualified name is needed
                 TestStaticDirective? v;
                 v = null;
                 unsafe
                 {
-                    Console.WriteLine(sizeof(TestStaticDirective)); 
+                    Console.WriteLine(sizeof(TestStaticDirective));
                 }
             }
         }
@@ -102,7 +103,7 @@ namespace TestCSharp
 
     namespace StaticDirective
     {
-        public  class A
+        public class A
         {
             public int Number { get; set; }
             public string Name { get; set; }
@@ -117,19 +118,19 @@ namespace TestCSharp
             }
         }
 
-        public  class B
+        public class B
         {
             public static void m()
             {
 
             }
         }
-        
+
     }
 
     namespace ConstructorObjectInitializer
     {
-       public class A
+        public class A
         {
             public int Age { get; set; }
             public string Name { get; set; }
@@ -139,10 +140,64 @@ namespace TestCSharp
                 Name = name;
                 Console.WriteLine(DateTime.Now.Millisecond);
                 Console.WriteLine(Name);
-                
+
             }
         }
-      
+
     }
-    
+
+    namespace ThreadingWithLock
+    {
+        public class Account
+        {
+            private Object thisLock = new Object();
+            int balance;
+
+            Random r = new Random();
+
+            public Account(int initial)
+            {
+                balance = initial;
+            }
+
+            int Withdraw(int amount)
+            {
+
+                // This condition never is true unless the lock statement
+                // is commented out.
+                if (balance < 0)
+                {
+                    throw new Exception("Negative Balance");
+                }
+
+                // Comment out the next line to see the effect of leaving out 
+                // the lock keyword.
+                lock (thisLock)
+                {
+                    if (balance >= amount)
+                    {
+                        Console.WriteLine(Thread.CurrentThread.ManagedThreadId);
+                        Console.WriteLine("Balance before Withdrawal :  " + balance);
+                        Console.WriteLine("Amount to Withdraw        : -" + amount);
+                        balance = balance - amount;
+                        Console.WriteLine("Balance after Withdrawal  :  " + balance);
+                        Console.WriteLine();
+                        return amount;
+                    }
+                    else
+                    {
+                        return 0; // transaction rejected
+                    }
+                }
+            }
+
+            public void DoTransactions()
+            {
+                for (int i = 0; i < 50; i++)
+                {
+                    Withdraw(r.Next(1, 100));
+                }
+            }
+        }
+    }
 }
