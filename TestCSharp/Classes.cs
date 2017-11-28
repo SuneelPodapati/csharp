@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
-using static TestCSharp.StaticDirective.A;
-using static TestCSharp.StaticDirective.B;
 
 
 namespace TestCSharp
@@ -28,6 +22,9 @@ namespace TestCSharp
 
         struct TestStaticDirective
         {
+            private int a;
+            private char b;
+
             public void MM()
             {
                 // A.m();  // Fully Qualified name is needed
@@ -198,6 +195,75 @@ namespace TestCSharp
                     Withdraw(r.Next(1, 100));
                 }
             }
+        }
+    }
+
+    namespace EnumFlags
+    {
+        [Flags]  // Helps for logical operations using the enums. Try to use one bit per enum like 0, 1, 2, 4, 8, 16..
+        public enum CarOptions : int
+        {
+            SunRoof = 0x01,
+            Spoiler = 0x02,
+            FogLights = 0x04,
+            TintedWindows = 0x08,
+        }
+    }
+
+    namespace DelegatesAsEventsAndHandlers
+    {
+        public class Vehicle
+        {
+            private float tyreTemparature;
+
+            public float TyreTemparature
+            {
+                get { return tyreTemparature; }
+                private set
+                {
+                    if (tyreTemparature + value < 60)
+                    {
+                        tyreTemparature += value;
+                    }
+                    else
+                    {
+                        tyreTemparature = tyreTemparature + value;
+                        Puncture(new PuncturedArgs() { InitialSpeed = Speed, FinalSpeed = 0, Temparature = TyreTemparature, TyresLeft = Tyres });
+                    }
+                }
+            }
+
+            public int Tyres { get; private set; } = 4;
+            public float Speed { get; private set; } = 0;
+
+            public PuncturedHandler Punctured;
+            public delegate void PuncturedHandler(object s, PuncturedArgs e);
+
+            public void Accelerate()
+            {
+                while (Tyres == 4)
+                {
+                    Speed += 10;
+                    TyreTemparature += (Speed/10) + 3.14f - (Speed/4);
+                    Console.WriteLine($"Speed: {Speed} and Temparature: {TyreTemparature}");
+                    Thread.Sleep(1000);
+                }
+            }
+
+            private void Puncture( PuncturedArgs e)
+            {
+                Tyres--;
+                Punctured?.Invoke(this, e);
+            }
+
+        }
+        public class PuncturedArgs
+        {
+            public float InitialSpeed { get; set; }
+            public float FinalSpeed { get; set; }
+            public int TyresLeft { get; set; }
+            public float Temparature { get; set; }
+
         }
     }
 }

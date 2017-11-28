@@ -9,19 +9,13 @@ using TestCSharp.ConstructorObjectInitializer;
 using System.Net.Http;
 using System.Threading;
 using TestCSharp.ThreadingWithLock;
+using TestCSharp.EnumFlags;
+using TestCSharp.DelegatesAsEventsAndHandlers;
 
 namespace TestCSharp
 {
-    class Program
+    public class Program
     {
-        static AutoResetEvent autoEvent;
-
-        static void DoWork()
-        {
-            Console.WriteLine("   worker thread started, now waiting on event...");
-            autoEvent.WaitOne();
-            Console.WriteLine("   worker thread reactivated, now exiting...");
-        }
         private static List<int> list;
 
         static void Main(string[] args)
@@ -116,23 +110,64 @@ namespace TestCSharp
             //    t.Join();
             #endregion
 
-            autoEvent = new AutoResetEvent(false);
+            #region AutoResetEvent
+            //autoEvent = new AutoResetEvent(false);
 
-            Console.WriteLine("main thread starting worker thread...");
-            Thread t = new Thread(DoWork);
-            t.Start();
+            //Console.WriteLine("main thread starting worker thread...");
+            //Thread t = new Thread(DoWork);
+            //t.Start();
+
+            //Console.WriteLine("main thread sleeping for 1 second...");
+            //var v = Console.ReadLine();
+            //Thread.Sleep(1000);
+
+            //Console.WriteLine("main thread signaling worker thread...");
+            //autoEvent.Set(); 
+            #endregion
+
+            #region CheckedUnchecked
+            //int maxIntValue = int.MaxValue;
+            //var v = 0;
+
+            //unchecked
+            //{
+            //    checked
+            //    {
+            //        v = maxIntValue + 10;
+            //    }
+            //} 
+            #endregion
+
+            #region EnumFlags
+            //Console.WriteLine(default(CarOptions));
+            //CarOptions c = (CarOptions)7; // Does not generates any error.
+            //Console.WriteLine(c); // returns the result same as | operated if possible, or else the simple int
+            //CarOptions options = CarOptions.SunRoof | CarOptions.FogLights;
+            //Console.WriteLine(options); // Use the Flags attribute to display the name of each enum element that has the value 1
+            #endregion
+
+            #region DelegatesAsEventsAndHandlers
+            //Vehicle v = new Vehicle();
+            //Thread t = new Thread(v.Accelerate);
+            //t.Start();
+            //v.Punctured += (s, e) => Console.WriteLine($"Punctured at {e.InitialSpeed} kmph. with {e.TyresLeft} tyres left.");
+            //v.Punctured += (s, e) => Console.WriteLine($"Vehicle has Punctured at {e.Temparature} degree temparature. So the tyre " + (e.Temparature > 60 ? "cannot" : "can") + " be reused");
+            #endregion
             
-            Console.WriteLine("main thread sleeping for 1 second...");
-            var v = Console.ReadLine();
-            Thread.Sleep(1000);
-
-            Console.WriteLine("main thread signaling worker thread...");
-            autoEvent.Set();
-
 
             Console.ReadLine();
         }
 
+        #region ConstVsReadOnly
+        //public readonly int readOnly = 1;
+        //public const int constant = 1 + 2; // Expressions that can give a constant value can be used 
+        //public Program()
+        //{
+        //    readOnly = 10;
+        //    // constant = 20; // Only one assignment and declaration for const at the 
+        //    readOnly = 20;
+        //} 
+        #endregion
 
         #region AsyncMethod
         static async Task<string> myMethod()
@@ -140,6 +175,17 @@ namespace TestCSharp
             var http = new HttpClient();
             return await http.GetStringAsync("https://github.com/SuneelPodapati");
         }
+        #endregion
+
+        #region AutoResetEvent
+        //static AutoResetEvent autoEvent;
+
+        //static void DoWork()
+        //{
+        //    Console.WriteLine("   worker thread started, now waiting on event...");
+        //    autoEvent.WaitOne();
+        //    Console.WriteLine("   worker thread reactivated, now exiting...");
+        //} 
         #endregion
     }
 }
