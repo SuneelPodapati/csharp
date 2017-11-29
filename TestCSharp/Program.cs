@@ -11,6 +11,7 @@ using System.Threading;
 using TestCSharp.ThreadingWithLock;
 using TestCSharp.EnumFlags;
 using TestCSharp.DelegatesAsEventsAndHandlers;
+using TestCSharp.ForEachEffectedNoIEnumerable;
 
 namespace TestCSharp
 {
@@ -153,7 +154,28 @@ namespace TestCSharp
             //v.Punctured += (s, e) => Console.WriteLine($"Punctured at {e.InitialSpeed} kmph. with {e.TyresLeft} tyres left.");
             //v.Punctured += (s, e) => Console.WriteLine($"Vehicle has Punctured at {e.Temparature} degree temparature. So the tyre " + (e.Temparature > 60 ? "cannot" : "can") + " be reused");
             #endregion
-            
+
+            #region ForEachEffectedNoIEnumerable
+            //var names = new String[] { "Suneel", "Sachin", "Sourav", "Ray", "Vale", "Franko", "Nicky" };
+            //foreach (var item in names)
+            //{
+            //    Console.WriteLine(item);
+            //    names[3] = "Rossi";  // Changes the enumerating list thta is being cached
+            //    names = names.Reverse().ToArray(); // Effects the array reference, but the cached array does not have any effect so the iteration will have no effect
+            //}
+            //names.ToList().ForEach(x => Console.WriteLine(x)); 
+
+
+
+
+            //var people = new People();  // foreach only needs the members not the interfaces
+            //foreach (string person in people)  // Removing the IEnumerable implementation makes the foreach source to be strongly typed.
+            //{
+            //    Console.WriteLine(person);
+            //}
+            #endregion
+
+
 
             Console.ReadLine();
         }

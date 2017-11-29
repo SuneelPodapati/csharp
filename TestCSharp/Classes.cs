@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Threading;
 
 
@@ -264,6 +265,52 @@ namespace TestCSharp
             public int TyresLeft { get; set; }
             public float Temparature { get; set; }
 
+        }
+    }
+
+    namespace ForEachEffectedNoIEnumerable
+    {
+        public class People
+        {
+            private string[] persons = new String[] { "Suneel", "Sachin", "Sourav", "Ray", "Vale", "Franko", "Nicky" };
+            
+            public PeopleEnumerator GetEnumerator()  // IEnumerable is not needed for foreach
+            {
+                return new PeopleEnumerator(this);
+            }
+            public class PeopleEnumerator           // Enumerator need not implement IEnumerator
+            {
+                private int position = -1;
+                private People t;
+                
+                public PeopleEnumerator(People t)
+                {
+                    this.t = t;
+                }
+                public bool MoveNext()
+                {
+                    if (position < t.persons.Length - 1)
+                    {
+                        position++;
+                        return true;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                }
+                public void Reset()
+                {
+                    position = -1;
+                }
+                public string Current  // The return type of Current need not be osbject but can be specific by removing IEnumerator
+                {
+                    get
+                    {
+                        return t.persons[position];
+                    }
+                }  
+            }
         }
     }
 }
