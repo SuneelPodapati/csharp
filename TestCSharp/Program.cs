@@ -148,6 +148,12 @@ namespace TestCSharp
             //Console.WriteLine(options); // Use the Flags attribute to display the name of each enum element that has the value 1
             #endregion
 
+            #region FrameworkEvents
+            //Console.WriteLine("Creating UI");
+            //UI ui = new UI();
+            //ui.RenderUI();
+            #endregion
+
             #region DelegatesAsEventsAndHandlers
             //Vehicle v = new Vehicle();
             //Thread t = new Thread(v.Accelerate);
@@ -155,7 +161,7 @@ namespace TestCSharp
             //v.Punctured += (s, e) => Console.WriteLine($"Punctured at {e.InitialSpeed} kmph. with {e.TyresLeft} tyres left.");
             //v.Punctured += (s, e) => Console.WriteLine($"Vehicle has Punctured at {e.Temparature} degree temparature. So the tyre " + (e.Temparature > 60 ? "cannot" : "can") + " be reused");
             #endregion
-
+            
             #region ForEachEffectedNoIEnumerable
             //var names = new String[] { "Suneel", "Sachin", "Sourav", "Ray", "Vale", "Franko", "Nicky" };
             //foreach (var item in names)
@@ -213,11 +219,7 @@ namespace TestCSharp
             //}
             #endregion
 
-            #region FrameworkEvents
-            //Console.WriteLine("Creating UI");
-            //UI ui = new UI();
-            //ui.RenderUI();
-            #endregion
+
 
 
 
