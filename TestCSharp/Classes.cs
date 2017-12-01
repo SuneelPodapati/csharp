@@ -213,6 +213,17 @@ namespace TestCSharp
 
     namespace DelegatesAsEventsAndHandlers
     {
+        public class Delegates
+        {
+            public Action Action { get; set; }
+            public Action<int> Action2 { get; set; }
+            public Func<int> Func { get; set; }
+            public Func<int, int> Func2 { get; set; }
+            public Func<int, int, int> Func3 { get; set; }
+            public Predicate<int> Predicate { get; set; }
+            public EventHandler<int> EventHandler { get; set; }
+            
+        }
         public class Vehicle
         {
             private float tyreTemparature;
@@ -238,6 +249,7 @@ namespace TestCSharp
             public float Speed { get; private set; } = 0;
 
             public PuncturedHandler Punctured;
+            //public event PuncturedHandler Punctured;  // So event is a access modifier on the EventHandler delegate reference
             public delegate void PuncturedHandler(object s, PuncturedArgs e);
 
             public void Accelerate()
@@ -313,4 +325,64 @@ namespace TestCSharp
             }
         }
     }
+
+    namespace FrameworkEvents
+    {
+        public class Button
+        {
+            public int PointerLocation { get; set; } = 0;
+            public event EventHandler<MouseOverEventArgs> MouseOver;
+            
+            public void MoveCursor()
+            {
+                while (PointerLocation != 100)
+                {
+                    Console.WriteLine($"Moving Cursor From {PointerLocation} to {PointerLocation + 1}");
+                    PointerLocation++;
+                    if (PointerLocation > 50)
+                    {
+                        FireEvent(new MouseOverEventArgs { Location = this.PointerLocation, Position = -1 });
+                        return;
+                    }
+                }
+            }
+            protected virtual void FireEvent(MouseOverEventArgs args)
+            {
+                MouseOver?.Invoke(this, args);
+            }
+        }
+
+        public class MouseOverEventArgs : EventArgs
+        {
+            public int Position { get; set; }
+            public int Location { get; set; }
+
+        }
+
+        public class UI
+        {
+            private Button button;
+            public  void RenderUI()
+            {
+                button = new Button();
+                Console.WriteLine("Subscribing to MouseOver");
+                button.MouseOver += Button_MouseOver;
+                button.MouseOver += Button_MouseOver1;
+                button.MouseOver += (s, e) =>
+                Console.WriteLine($"Handler 3: Mouse is Over the element at {e.Location} on {Thread.CurrentThread.ManagedThreadId}");
+                button.MoveCursor();
+            }
+
+            private void Button_MouseOver(object s, MouseOverEventArgs e)
+            {
+                Console.WriteLine($"Handler 1: Mouse is Over the element at {e.Location} on {Thread.CurrentThread.ManagedThreadId}");
+            }
+            private void Button_MouseOver1(object s, MouseOverEventArgs e)
+            {
+                Console.WriteLine($"Handler 2: Mouse is Over the element at: {e.Location} on {Thread.CurrentThread.ManagedThreadId}");
+            }
+        }
+    }
+
+
 }

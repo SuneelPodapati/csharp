@@ -12,6 +12,7 @@ using TestCSharp.ThreadingWithLock;
 using TestCSharp.EnumFlags;
 using TestCSharp.DelegatesAsEventsAndHandlers;
 using TestCSharp.ForEachEffectedNoIEnumerable;
+using TestCSharp.FrameworkEvents;
 
 namespace TestCSharp
 {
@@ -71,8 +72,8 @@ namespace TestCSharp
             #endregion
 
             #region AsyncMain
-            //string asyncResult = Task.Run(myMethod).GetAwaiter().GetResult();
-            //Console.WriteLine(asyncResult);
+            //string asyncResult = Task.Run(myMainAsync).GetAwaiter().GetResult();
+            //Console.WriteLine(asyncResult); 
             #endregion
 
             #region BoxingUnBoxing
@@ -175,6 +176,49 @@ namespace TestCSharp
             //}
             #endregion
 
+            #region AsyncException
+            //string asyncResult = "Begin";
+            //try
+            //{
+            //    Thread thread = new Thread(new ThreadStart(myMethodAsync));
+            //    thread.Start();
+            //    Console.WriteLine("Before join");
+            //    // thread.Join();
+            //    Console.WriteLine("After Join");
+            //}
+            //catch (Exception exp)
+            //{
+            //    Console.WriteLine("Exception in Main");
+            //    Console.WriteLine(exp.Message + "\n" + Thread.CurrentThread.ManagedThreadId);
+            //}
+            //Console.WriteLine("After try catch in main");
+            //Console.ReadLine();
+            //Thread t = new Thread(new ThreadStart(myMethodAsync));
+            //t.Start();
+            //// thread.Join();
+            //Console.WriteLine("After Join");
+            //Console.WriteLine(asyncResult);
+            //try
+            //{
+            //    Thread thread = new Thread(new ThreadStart(myMethodAsync));
+            //    thread.Start();
+            //    Console.WriteLine("Thread 2");
+            //    // thread.Join();
+            //    Console.WriteLine("Thread 2: After Join");
+            //}
+            //catch (Exception exp)
+            //{
+            //    Console.WriteLine("Thread 2: Exception in Main");
+            //    Console.WriteLine(exp.Message + "\n" + Thread.CurrentThread.ManagedThreadId);
+            //}
+            #endregion
+
+            #region FrameworkEvents
+            //Console.WriteLine("Creating UI");
+            //UI ui = new UI();
+            //ui.RenderUI();
+            #endregion
+
 
 
             Console.ReadLine();
@@ -191,12 +235,26 @@ namespace TestCSharp
         //} 
         #endregion
 
-        #region AsyncMethod
-        static async Task<string> myMethod()
-        {
-            var http = new HttpClient();
-            return await http.GetStringAsync("https://github.com/SuneelPodapati");
-        }
+        #region AsyncMethods
+        //static async Task<string> myMainAsync()
+        //{
+        //    var http = new HttpClient();
+        //    return await http.GetStringAsync("https://github.com/SuneelPodapati");
+        //}
+        //static async void myMethodAsync()
+        //{
+        //    var http = new HttpClient();
+        //    try
+        //    {
+        //        Console.WriteLine("Try in async method");
+        //        Console.WriteLine(await http.GetStringAsync("http://abc"));
+        //    }
+        //    catch (Exception exp)
+        //    {
+        //        Console.WriteLine("Exception in method");
+        //        Console.WriteLine(exp.Message+ "\n" + Thread.CurrentThread.ManagedThreadId);
+        //    }
+        //}
         #endregion
 
         #region AutoResetEvent
@@ -207,7 +265,7 @@ namespace TestCSharp
         //    Console.WriteLine("   worker thread started, now waiting on event...");
         //    autoEvent.WaitOne();
         //    Console.WriteLine("   worker thread reactivated, now exiting...");
-        //} 
+        //}
         #endregion
     }
 }
