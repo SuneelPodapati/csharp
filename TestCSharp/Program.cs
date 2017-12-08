@@ -161,7 +161,7 @@ namespace TestCSharp
             //v.Punctured += (s, e) => Console.WriteLine($"Punctured at {e.InitialSpeed} kmph. with {e.TyresLeft} tyres left.");
             //v.Punctured += (s, e) => Console.WriteLine($"Vehicle has Punctured at {e.Temparature} degree temparature. So the tyre " + (e.Temparature > 60 ? "cannot" : "can") + " be reused");
             #endregion
-            
+
             #region ForEachEffectedNoIEnumerable
             //var names = new String[] { "Suneel", "Sachin", "Sourav", "Ray", "Vale", "Franko", "Nicky" };
             //foreach (var item in names)
@@ -218,9 +218,7 @@ namespace TestCSharp
             //    Console.WriteLine(exp.Message + "\n" + Thread.CurrentThread.ManagedThreadId);
             //}
             #endregion
-
-
-
+            
 
 
             Console.ReadLine();
