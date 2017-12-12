@@ -13,6 +13,8 @@ using TestCSharp.EnumFlags;
 using TestCSharp.DelegatesAsEventsAndHandlers;
 using TestCSharp.ForEachEffectedNoIEnumerable;
 using TestCSharp.FrameworkEvents;
+using System.Linq.Expressions;
+using TestCSharp.ExpressionsAndTrees;
 
 namespace TestCSharp
 {
@@ -218,8 +220,18 @@ namespace TestCSharp
             //    Console.WriteLine(exp.Message + "\n" + Thread.CurrentThread.ManagedThreadId);
             //}
             #endregion
-            
 
+            #region ExpressionsAndTrees
+            //Expression<Func<int, int>> sum = (a) => 1 + 2 + a + 4;
+            //var v = Visitor.CreateFromExpression(sum);
+            //v.Visit("");
+            //Expression<Func<int, int>> factorial = (n) => 
+            //n == 0 ? 1 : Enumerable.Range(1, n).Aggregate((product, factor) => product * factor);
+            //v = Visitor.CreateFromExpression(factorial);
+            //v.Visit("");
+            #endregion
+
+            
 
             Console.ReadLine();
         }
