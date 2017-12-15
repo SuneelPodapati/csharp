@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+using System.Collections;
 using System.Linq.Expressions;
 using System.Threading;
 
@@ -269,68 +268,6 @@ namespace TestCSharp
                 Console.WriteLine($"Handler 2: Mouse is Over the element at: {e.Location} on {Thread.CurrentThread.ManagedThreadId}");
             }
         }
-
-        class EventPropertyButton  // Where events are declared as event properties
-        {
-            // The class EventPropertyButton defines two event properties, MouseUp and MouseDown.
-
-            // Define the delegate collection (EventHandlerList) to hold the delegates as a key value pairs.
-            protected EventHandlerList listEventDelegates = new EventHandlerList();
-
-            // Define a unique key for each event to hold its corresponding event handlers in the collection.
-            static readonly object mouseDownEventKey = new object();
-            static readonly object mouseUpEventKey = new object();
-
-            // Define the MouseDown event property.
-            public event EventHandler MouseDown
-            {
-                // Add the input delegate to the collection.
-                add
-                {
-                    // The event handler that is attached to this event by the subscriber will come in to this add property through the value.
-                    // eventPropertyComponent.MouseDown += MyEventHandler triggers the call to this add property on this event
-                    listEventDelegates.AddHandler(mouseDownEventKey, value);
-                }
-                // Remove the input delegate from the collection.
-                remove
-                {
-                    // The event handler that is removed from this event by the subscriber will come in to this remove property through the value.
-                    // eventPropertyComponent.MouseDown -= MyEventHandler triggers the call to this remove property on this event
-                    listEventDelegates.RemoveHandler(mouseDownEventKey, value);
-                }
-            }
-
-            // Raise the event with the delegate specified by mouseDownEventKey
-            private void OnMouseDown(MouseOverEventArgs e)
-            {
-                EventHandler mouseDown =
-                    (EventHandler)listEventDelegates[mouseDownEventKey];
-                mouseDown?.Invoke(this, e);
-            }
-
-            // Define the MouseUp event property.
-            public event EventHandler MouseUp
-            {
-                // Add the input delegate to the collection.
-                add
-                {
-                    listEventDelegates.AddHandler(mouseUpEventKey, value);
-                }
-                // Remove the input delegate from the collection.
-                remove
-                {
-                    listEventDelegates.RemoveHandler(mouseUpEventKey, value);
-                }
-            }
-
-            // Raise the event with the delegate specified by mouseUpEventKey
-            private void OnMouseUp(MouseOverEventArgs e)
-            {
-                EventHandler mouseUp =
-                    (EventHandler)listEventDelegates[mouseUpEventKey];
-                mouseUp?.Invoke(this, e);
-            }
-        }
     }
 
     namespace DelegatesAsEventsAndHandlers
@@ -344,7 +281,7 @@ namespace TestCSharp
             public Func<int, int, int> Func3 { get; set; }
             public Predicate<int> Predicate { get; set; }
             public EventHandler<int> EventHandler { get; set; }
-
+            
         }
         public class Vehicle
         {
@@ -379,13 +316,13 @@ namespace TestCSharp
                 while (Tyres == 4)
                 {
                     Speed += 10;
-                    TyreTemparature += (Speed / 10) + 3.14f - (Speed / 4);
+                    TyreTemparature += (Speed/10) + 3.14f - (Speed/4);
                     Console.WriteLine($"Speed: {Speed} and Temparature: {TyreTemparature}");
                     Thread.Sleep(1000);
                 }
             }
 
-            private void Puncture(PuncturedArgs e)
+            private void Puncture( PuncturedArgs e)
             {
                 Tyres--;
                 Punctured?.Invoke(this, e);
@@ -407,7 +344,7 @@ namespace TestCSharp
         public class People
         {
             private string[] persons = new String[] { "Suneel", "Sachin", "Sourav", "Ray", "Vale", "Franko", "Nicky" };
-
+            
             public PeopleEnumerator GetEnumerator()  // IEnumerable is not needed for foreach
             {
                 return new PeopleEnumerator(this);
@@ -416,7 +353,7 @@ namespace TestCSharp
             {
                 private int position = -1;
                 private People t;
-
+                
                 public PeopleEnumerator(People t)
                 {
                     this.t = t;
@@ -443,7 +380,7 @@ namespace TestCSharp
                     {
                         return t.persons[position];
                     }
-                }
+                }  
             }
         }
     }
@@ -565,206 +502,5 @@ namespace TestCSharp
         }
     }
 
-    namespace ObserverPattern
-    {
-        public class BaggageInfo
-        {
-            private int flightNo;
-            private string origin;
-            private int location;
 
-            internal BaggageInfo(int flight, string from, int carousel)
-            {
-                this.flightNo = flight;
-                this.origin = from;
-                this.location = carousel;
-            }
-
-            public int FlightNumber
-            {
-                get { return this.flightNo; }
-            }
-
-            public string From
-            {
-                get { return this.origin; }
-            }
-
-            public int Carousel
-            {
-                get { return this.location; }
-            }
-        }
-
-        public class BaggageHandler : IObservable<BaggageInfo>
-        {
-            private List<IObserver<BaggageInfo>> observers;
-            private List<BaggageInfo> flights;
-
-            public BaggageHandler()
-            {
-                observers = new List<IObserver<BaggageInfo>>();
-                flights = new List<BaggageInfo>();
-            }
-
-            public IDisposable Subscribe(IObserver<BaggageInfo> observer)
-            {
-                // Check whether observer is already registered. If not, add it
-                if (!observers.Contains(observer))
-                {
-                    observers.Add(observer);
-                    // Provide observer with existing data.
-                    foreach (var item in flights)
-                        observer.OnNext(item);
-                }
-                return new Unsubscriber<BaggageInfo>(observers, observer);
-            }
-
-            // Called to indicate all baggage is now unloaded.
-            public void BaggageStatus(int flightNo)
-            {
-                BaggageStatus(flightNo, String.Empty, 0);
-            }
-
-            public void BaggageStatus(int flightNo, string from, int carousel)
-            {
-                var info = new BaggageInfo(flightNo, from, carousel);
-
-                // Carousel is assigned, so add new info object to list.
-                if (carousel > 0 && !flights.Contains(info))
-                {
-                    flights.Add(info);
-                    foreach (var observer in observers)
-                        observer.OnNext(info);
-                }
-                else if (carousel == 0)
-                {
-                    // Baggage claim for flight is done
-                    var flightsToRemove = new List<BaggageInfo>();
-                    foreach (var flight in flights)
-                    {
-                        if (info.FlightNumber == flight.FlightNumber)
-                        {
-                            flightsToRemove.Add(flight);
-                            foreach (var observer in observers)
-                                observer.OnNext(info);
-                        }
-                    }
-                    foreach (var flightToRemove in flightsToRemove)
-                        flights.Remove(flightToRemove);
-
-                    flightsToRemove.Clear();
-                }
-            }
-
-            public void LastBaggageClaimed()
-            {
-                foreach (var observer in observers)
-                    observer.OnCompleted();
-
-                observers.Clear();
-            }
-        }
-
-        internal class Unsubscriber<BaggageInfo> : IDisposable
-        {
-            private List<IObserver<BaggageInfo>> _observers;
-            private IObserver<BaggageInfo> _observer;
-
-            internal Unsubscriber(List<IObserver<BaggageInfo>> observers, IObserver<BaggageInfo> observer)
-            {
-                this._observers = observers;
-                this._observer = observer;
-            }
-
-            public void Dispose()
-            {
-                if (_observers.Contains(_observer))
-                    _observers.Remove(_observer);
-            }
-        }
-
-        public class ArrivalsMonitor : IObserver<BaggageInfo>
-        {
-            private string name;
-            private List<string> flightInfos = new List<string>();
-            private IDisposable cancellation;
-            private string fmt = "{0,-20} {1,5}  {2, 3}";
-
-            public ArrivalsMonitor(string name)
-            {
-                if (String.IsNullOrEmpty(name))
-                    throw new ArgumentNullException("The observer must be assigned a name.");
-
-                this.name = name;
-            }
-
-            public virtual void Subscribe(BaggageHandler provider)
-            {
-                cancellation = provider.Subscribe(this);
-            }
-
-            public virtual void Unsubscribe()
-            {
-                cancellation.Dispose();
-                flightInfos.Clear();
-            }
-
-            public virtual void OnCompleted()
-            {
-                flightInfos.Clear();
-            }
-
-            // No implementation needed: Method is not called by the BaggageHandler class.
-            public virtual void OnError(Exception e)
-            {
-                // No implementation.
-            }
-
-            // Update information.
-            public virtual void OnNext(BaggageInfo info)
-            {
-                bool updated = false;
-
-                // Flight has unloaded its baggage; remove from the monitor.
-                if (info.Carousel == 0)
-                {
-                    var flightsToRemove = new List<string>();
-                    string flightNo = String.Format("{0,5}", info.FlightNumber);
-
-                    foreach (var flightInfo in flightInfos)
-                    {
-                        if (flightInfo.Substring(21, 5).Equals(flightNo))
-                        {
-                            flightsToRemove.Add(flightInfo);
-                            updated = true;
-                        }
-                    }
-                    foreach (var flightToRemove in flightsToRemove)
-                        flightInfos.Remove(flightToRemove);
-
-                    flightsToRemove.Clear();
-                }
-                else
-                {
-                    // Add flight if it does not exist in the collection.
-                    string flightInfo = String.Format(fmt, info.From, info.FlightNumber, info.Carousel);
-                    if (!flightInfos.Contains(flightInfo))
-                    {
-                        flightInfos.Add(flightInfo);
-                        updated = true;
-                    }
-                }
-                if (updated)
-                {
-                    flightInfos.Sort();
-                    Console.WriteLine("Arrivals information from {0}", this.name);
-                    foreach (var flightInfo in flightInfos)
-                        Console.WriteLine(flightInfo);
-
-                    Console.WriteLine();
-                }
-            }
-        }
-    }
 }
